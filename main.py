@@ -10,15 +10,33 @@ screen.setup(width=725, height=491)
 data = pandas.read_csv("50_states.csv")
 states = data["state"].tolist()
 num_states = len(states)
+guessed_states = []
+correct_answer = len(guessed_states)
+missed_states = []
 
-correct_answer = 0
 while correct_answer < num_states:
     player = screen.textinput(f"{correct_answer}/{num_states} States Correct", "What's another state name?").title()
-    if player in states:
-        correct_answer += 1
+    if player in states and player not in guessed_states:
+        guessed_states.append(player)
         state_details = data[data["state"] == player]
         x = int(state_details["x"])
         y = int(state_details["y"])
         StateName(state_name=player, x_axis=x, y_axis=y)
+        correct_answer = len(guessed_states)
+    elif player == "Exit":
+        break
 
-screen.exitonclick()
+for state in states:
+    if state not in guessed_states:
+        missed_states.append(state)
+missed_states_dict = {
+    "Missed States": missed_states,
+}
+df_missed = pandas.DataFrame(data=missed_states_dict)
+df_missed.to_csv("missed_states.csv")
+
+guessed_states_dict = {
+    "Guessed States": guessed_states,
+}
+df_missed = pandas.DataFrame(data=guessed_states_dict)
+df_missed.to_csv("guessed_states.csv")
