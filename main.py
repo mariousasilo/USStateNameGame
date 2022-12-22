@@ -12,7 +12,7 @@ states = data["state"].tolist()
 num_states = len(states)
 guessed_states = []
 correct_answer = len(guessed_states)
-missed_states = []
+
 
 while correct_answer < num_states:
     player = screen.textinput(f"{correct_answer}/{num_states} States Correct", "What's another state name?").title()
@@ -24,19 +24,11 @@ while correct_answer < num_states:
         StateName(state_name=player, x_axis=x, y_axis=y)
         correct_answer = len(guessed_states)
     elif player == "Exit":
+        missed_states = [state for state in states if state not in guessed_states]
+        df_missed = pandas.DataFrame(data=missed_states)
+        df_missed.to_csv("missed_states.csv")
+        df_guessed = pandas.DataFrame(data=guessed_states)
+        df_guessed.to_csv("guessed_states.csv")
         break
 
-for state in states:
-    if state not in guessed_states:
-        missed_states.append(state)
-missed_states_dict = {
-    "Missed States": missed_states,
-}
-df_missed = pandas.DataFrame(data=missed_states_dict)
-df_missed.to_csv("missed_states.csv")
 
-guessed_states_dict = {
-    "Guessed States": guessed_states,
-}
-df_missed = pandas.DataFrame(data=guessed_states_dict)
-df_missed.to_csv("guessed_states.csv")
